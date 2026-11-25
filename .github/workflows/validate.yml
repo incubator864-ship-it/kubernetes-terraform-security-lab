@@ -2,6 +2,7 @@ name: Validate detection lab
 on:
   push:
     branches: [main]
+    paths-ignore: ["**/*.md"]
   pull_request:
   workflow_dispatch:
 permissions:
@@ -50,6 +51,14 @@ jobs:
           terraform -chdir=terraform plan -out=lab.tfplan
           terraform -chdir=terraform apply lab.tfplan
           bash scripts/verify_cluster.sh
+      - name: Preserve replay evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: replay-evidence
+          path: reports/*.json
+          retention-days: 14
+          if-no-files-found: error
       - name: Clean up disposable cluster
         if: always()
         run: |
