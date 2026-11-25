@@ -1,0 +1,7 @@
+*
+!workbench/
+!workbench/*.py
+!examples/
+!examples/*.json
+!rules/
+!rules/*.json

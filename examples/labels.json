@@ -1,0 +1,15 @@
+{
+  "e01": "benign",
+  "e02": "benign",
+  "e03": "benign",
+  "e04": "benign",
+  "e05": "malicious",
+  "e06": "malicious",
+  "e07": "malicious",
+  "e08": "malicious",
+  "e09": "malicious",
+  "e10": "benign",
+  "e11": "malicious",
+  "e12": "unknown",
+  "e13": "unknown"
+}

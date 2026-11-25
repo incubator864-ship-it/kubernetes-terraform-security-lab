@@ -1,0 +1,56 @@
+name: Validate detection lab
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  replay-and-cluster:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd
+        with:
+          terraform_version: 1.14.0
+          terraform_wrapper: false
+      - name: Test detection logic and expected telemetry failure
+        run: |
+          python3 -m unittest discover -s tests -v
+          set +e
+          python3 -m workbench --output reports/comparison.json
+          result=$?
+          set -e
+          test "$result" -eq 4
+          python3 -m workbench --source examples/evaluable.json --ingested examples/evaluable.json --output reports/evaluable.json
+      - name: Validate Terraform
+        run: |
+          terraform -chdir=terraform fmt -check
+          terraform -chdir=terraform init -backend=false -lockfile=readonly
+          terraform -chdir=terraform validate
+      - name: Install kind from official release and verify checksum
+        run: |
+          curl --fail --location --retry 3 -o kind https://github.com/kubernetes-sigs/kind/releases/download/v0.33.0/kind-linux-amd64
+          curl --fail --location --retry 3 -o kind.sha256sum https://github.com/kubernetes-sigs/kind/releases/download/v0.33.0/kind-linux-amd64.sha256sum
+          expected=$(awk '{print $1}' kind.sha256sum)
+          printf '%s  kind\n' "$expected" | sha256sum --check
+          chmod +x kind
+          sudo mv kind /usr/local/bin/kind
+      - name: Build image and create disposable cluster
+        run: |
+          docker build -t detection-workbench:lab .
+          kind create cluster --name security-lab --wait 180s
+          kind load docker-image detection-workbench:lab --name security-lab
+      - name: Deploy and exercise controls
+        run: |
+          terraform -chdir=terraform plan -out=lab.tfplan
+          terraform -chdir=terraform apply lab.tfplan
+          bash scripts/verify_cluster.sh
+      - name: Clean up disposable cluster
+        if: always()
+        run: |
+          if command -v kind >/dev/null; then kind delete cluster --name security-lab; fi

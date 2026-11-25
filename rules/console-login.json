@@ -1,0 +1,19 @@
+{
+  "name": "Console login outside trusted network",
+  "trusted_cidrs": [
+    "192.0.2.0/24"
+  ],
+  "exceptions": [
+    {
+      "principal_arn": "arn:aws:iam::111122223333:user/lab-reviewer",
+      "account_id": "111122223333",
+      "source_ip": "198.51.100.10",
+      "result": "Success",
+      "mfa_used": "Yes",
+      "valid_from": "2026-01-15T08:00:00Z",
+      "expires_at": "2026-01-15T09:00:00Z",
+      "owner": "Lab author",
+      "justification": "Synthetic approved access from an exact temporary source. Not a production recommendation."
+    }
+  ]
+}

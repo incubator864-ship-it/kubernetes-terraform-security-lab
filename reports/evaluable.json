@@ -1,0 +1,129 @@
+{
+  "data_kind": "synthetic lab fixtures, not production performance",
+  "ingested_count": 11,
+  "limitation": "Metrics cover labeled, evaluable ingested fixtures only. Gaps and missing events are separate.",
+  "missing_malicious_ids": [],
+  "missing_source_ids": [],
+  "removed_alert_ids": [
+    "e01",
+    "e02",
+    "e03",
+    "e04"
+  ],
+  "removed_malicious_ids": [],
+  "source_count": 11,
+  "versions": {
+    "baseline": {
+      "counts": {
+        "fn": 1,
+        "fp": 4,
+        "gaps": 0,
+        "tn": 1,
+        "tp": 4,
+        "unknown": 1
+      },
+      "outcomes": {
+        "e01": {
+          "reason": "console login outside trusted source networks",
+          "status": "alert"
+        },
+        "e02": {
+          "reason": "console login outside trusted source networks",
+          "status": "alert"
+        },
+        "e03": {
+          "reason": "console login outside trusted source networks",
+          "status": "alert"
+        },
+        "e04": {
+          "reason": "console login outside trusted source networks",
+          "status": "alert"
+        },
+        "e05": {
+          "reason": "console login outside trusted source networks",
+          "status": "alert"
+        },
+        "e06": {
+          "reason": "console login outside trusted source networks",
+          "status": "alert"
+        },
+        "e07": {
+          "reason": "console login outside trusted source networks",
+          "status": "alert"
+        },
+        "e08": {
+          "reason": "trusted source network; credential abuse here is a known blind spot",
+          "status": "clear"
+        },
+        "e10": {
+          "reason": "trusted source network; credential abuse here is a known blind spot",
+          "status": "clear"
+        },
+        "e11": {
+          "reason": "console login outside trusted source networks",
+          "status": "alert"
+        },
+        "e13": {
+          "reason": "console login outside trusted source networks",
+          "status": "alert"
+        }
+      }
+    },
+    "tuned": {
+      "counts": {
+        "fn": 1,
+        "fp": 0,
+        "gaps": 0,
+        "tn": 5,
+        "tp": 4,
+        "unknown": 1
+      },
+      "outcomes": {
+        "e01": {
+          "reason": "matched scoped, time bounded lab exception",
+          "status": "clear"
+        },
+        "e02": {
+          "reason": "matched scoped, time bounded lab exception",
+          "status": "clear"
+        },
+        "e03": {
+          "reason": "matched scoped, time bounded lab exception",
+          "status": "clear"
+        },
+        "e04": {
+          "reason": "matched scoped, time bounded lab exception",
+          "status": "clear"
+        },
+        "e05": {
+          "reason": "console login outside trusted source networks",
+          "status": "alert"
+        },
+        "e06": {
+          "reason": "console login outside trusted source networks",
+          "status": "alert"
+        },
+        "e07": {
+          "reason": "console login outside trusted source networks",
+          "status": "alert"
+        },
+        "e08": {
+          "reason": "trusted source network; credential abuse here is a known blind spot",
+          "status": "clear"
+        },
+        "e10": {
+          "reason": "trusted source network; credential abuse here is a known blind spot",
+          "status": "clear"
+        },
+        "e11": {
+          "reason": "console login outside trusted source networks",
+          "status": "alert"
+        },
+        "e13": {
+          "reason": "console login outside trusted source networks",
+          "status": "alert"
+        }
+      }
+    }
+  }
+}

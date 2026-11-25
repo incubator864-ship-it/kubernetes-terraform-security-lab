@@ -4,13 +4,36 @@ A learning project by Lormensky Jean. Practice Terraform changes, Kubernetes wor
 
 ## Status
 
-Initial implementation. Terraform formatting and configuration validation passed with Terraform 1.14.0 and Kubernetes provider 2.37.1. No cluster deployment has been performed; kubectl, kind, and Docker were not available on the authoring machine. This is not a production reference architecture or a claim of Falcon/Splunk integration.
+The Python detection workbench runs locally with no third party packages. Twelve tests pass, including adversarial near matches, exception expiry, a known false negative, and missing telemetry. Terraform 1.14.0 validates the Kubernetes resources with provider 2.37.1.
+
+A GitHub Actions workflow builds the image, creates a disposable kind cluster, applies Terraform, and exercises the controls. See the [validation record](docs/validation.md) for execution status rather than assuming that a workflow file proves a successful deployment.
+
+## Start here
+
+```bash
+python3 -m unittest discover -s tests -v
+python3 -m workbench --source examples/evaluable.json --ingested examples/evaluable.json
+```
+
+[Workbench walkthrough and practice tasks](docs/workbench.md) | [Actual replay report](reports/evaluable.json)
+
+The complete fixture replay removes four benign alerts and preserves four malicious alerts. Both rule versions miss malicious activity from a trusted network. A separate outage fixture demonstrates missing and malformed events. These are synthetic fixture results, not production effectiveness claims.
+
+```mermaid
+flowchart LR
+  A[Synthetic source events] --> C[Baseline and tuned rules]
+  B[Ingestion snapshot] --> C
+  C --> D[Event comparison and telemetry gaps]
+  D --> E[JSON evidence and investigation notes]
+  F[Terraform] --> G[Kubernetes CronJob]
+  G --> C
+```
 
 ## What this version contains
 
 Terraform manages a restricted namespace, a dedicated service account without a mounted API token, two nonroot demo pods with resource limits, and an observer role that cannot read secrets. The local cluster is created separately with kind, keeping cluster bootstrap separate from the Kubernetes provider.
 
-The demo prints a heartbeat. It has no public endpoint. It does not install Falcon, Splunk, a CNI, or network policies. Image tags are versioned but not digest pinned; resolve and review an image digest before treating this as a reproducible release. Pod Security labels follow the cluster's current policy version; pin that version when pinning a cluster release.
+The baseline demo prints a heartbeat. A suspended CronJob runs the containerized detection workbench on demand. See [the workbench guide](docs/workbench.md#kubernetes-execution) for image build/load instructions before running a Job. It has no public endpoint. It does not install Falcon, Splunk, a CNI, or network policies. The workbench Python base image is digest pinned. The heartbeat image uses a version tag, and the local workbench image uses a lab tag. This is not a fully immutable production release. Pod Security labels follow the cluster's current policy version; pin that version when pinning a cluster release.
 
 ## Prerequisites
 
@@ -52,12 +75,13 @@ The negative write test is expected to exit nonzero. Impersonation checks use th
 
 ## Learning sequence
 
-1. Deploy the baseline and explain every resource in the plan.
-2. Change replicas, inspect the diff, then restore the baseline with Terraform.
-3. Test RBAC and Pod Security admission with disposable negative cases.
-4. Add Kubernetes audit logging with secret bodies excluded. Capture an exec event and a denied API request.
-5. Write and test Splunk detections against those events. Document ingestion, false positives, and missing telemetry.
-6. Add optional Falcon coverage checks only with authorized tenant access and appropriate licensing. Keep credentials outside Git.
+1. Run the workbench tests, inspect the per-event comparison, and explain the known miss.
+2. Deploy the baseline and explain every resource in the plan.
+3. Change replicas, inspect the diff, then restore the baseline with Terraform.
+4. Test RBAC and Pod Security admission with disposable negative cases.
+5. Add Kubernetes audit logging with secret bodies excluded. Capture an exec event and a denied API request.
+6. Write and test Splunk detections against those events. Document ingestion, false positives, and missing telemetry.
+7. Add optional Falcon coverage checks only with authorized tenant access and appropriate licensing. Keep credentials outside Git.
 
 [Validation record](docs/validation.md) | [Engineering notes](docs/engineering-notes.md)
 
