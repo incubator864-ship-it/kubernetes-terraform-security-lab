@@ -6,7 +6,7 @@ A learning project by Lormensky Jean. Practice Terraform changes, Kubernetes wor
 
 The Python detection workbench runs locally with no third party packages. Twelve tests pass, including adversarial near matches, exception expiry, a known false negative, and missing telemetry. Terraform 1.14.0 validates the Kubernetes resources with provider 2.37.1.
 
-A GitHub Actions workflow builds the image, creates a disposable kind cluster, applies Terraform, and exercises the controls. See the [validation record](docs/validation.md) for execution status rather than assuming that a workflow file proves a successful deployment.
+[GitHub Actions successfully built the image, created a disposable kind cluster, applied Terraform, and exercised the controls](https://github.com/incubator864-ship-it/kubernetes-terraform-security-lab/actions/runs/45659969560). The cluster was deleted after verification. See the [validation record](docs/validation.md) for execution status rather than assuming that a workflow file proves a successful deployment.
 
 ## Start here
 
