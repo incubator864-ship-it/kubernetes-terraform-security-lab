@@ -34,6 +34,10 @@ resource "kubernetes_service_account_v1" "app" {
 }
 
 resource "kubernetes_deployment_v1" "app" {
+  timeouts {
+    create = "2m"
+    update = "2m"
+  }
   metadata {
     name      = "lab-app"
     namespace = kubernetes_namespace_v1.lab.metadata[0].name

@@ -51,6 +51,13 @@ jobs:
           terraform -chdir=terraform plan -out=lab.tfplan
           terraform -chdir=terraform apply lab.tfplan
           bash scripts/verify_cluster.sh
+      - name: Capture failure diagnostics
+        if: failure()
+        run: |
+          kubectl --context kind-security-lab -n security-lab get deployments,replicasets,pods,jobs -o wide || true
+          kubectl --context kind-security-lab -n security-lab describe replicasets || true
+          kubectl --context kind-security-lab -n security-lab describe pods || true
+          kubectl --context kind-security-lab -n security-lab get events --sort-by=.lastTimestamp || true
       - name: Preserve replay evidence
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
