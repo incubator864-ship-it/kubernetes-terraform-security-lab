@@ -67,6 +67,7 @@ resource "kubernetes_deployment_v1" "app" {
           image   = "busybox:1.37.0"
           command = ["/bin/sh", "-c", "while true; do echo lab-heartbeat; sleep 30; done"]
           security_context {
+            run_as_non_root            = true
             allow_privilege_escalation = false
             read_only_root_filesystem  = true
             capabilities {

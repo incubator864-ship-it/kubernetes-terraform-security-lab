@@ -21,3 +21,7 @@ Kubernetes audit events can show API operations such as pods/exec and denied sec
 The detection runner is a batch task, so a suspended CronJob is a better fit than an always running web service. Forbid prevents overlapping scheduled executions, backoff_limit is zero so an unhealthy replay is visible, and a deadline bounds execution. The container requires no Kubernetes API token and no AWS credentials. Manual Job creation exercises the same template.
 
 A production scheduler still needs durable output, deduplication, late event handling, source freshness checks, and alert routing. The lab deliberately makes none of those claims.
+
+## Live failure: container security context overrides pod settings
+
+The first cluster rollout was blocked by Pod Security admission. ReplicaSet events reported that the container set runAsNonRoot=false, despite a pod-level true value in the Terraform source. Explicitly setting run_as_non_root=true in each container security context fixes that conflict without weakening the restricted namespace. Terraform validation alone did not reveal this runtime behavior. Failure diagnostics now capture ReplicaSet and Pod events before cleanup.

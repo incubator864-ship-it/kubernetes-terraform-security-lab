@@ -36,6 +36,7 @@ resource "kubernetes_cron_job_v1" "workbench" {
               image_pull_policy = "Never"
               args              = ["--source", "examples/evaluable.json", "--ingested", "examples/evaluable.json"]
               security_context {
+                run_as_non_root            = true
                 allow_privilege_escalation = false
                 read_only_root_filesystem  = true
                 capabilities {
